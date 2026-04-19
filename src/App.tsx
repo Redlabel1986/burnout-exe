@@ -16,8 +16,11 @@ const SOCIALS = [
     handle: "music.youtube.com",
     href: "https://music.youtube.com/search?q=burnout.exe",
   },
-  { name: "TikTok", handle: "@burnout.exe", href: "#" },
-  { name: "Bandcamp", handle: "burnout-exe", href: "#" },
+  {
+    name: "TikTok",
+    handle: "@burnoutexe",
+    href: "https://www.tiktok.com/@burnoutexe",
+  },
   { name: "GitHub", handle: "/burnout-exe", href: "#" },
 ];
 
