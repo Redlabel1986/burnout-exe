@@ -1,4 +1,216 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
+type Lang = "de" | "en";
+
+type Strings = {
+  nav: { music: string; about: string; stack: string; links: string; live: string };
+  hero: {
+    chipRelease: string; chipVersion: string; chipLicense: string;
+    tagline: string; prompt: string; cta1: string; cta2: string;
+    stats: { tracks: string; runtime: string; release: string; bpm: string };
+  };
+  music: { section: string; kicker: string; label: string; live: string };
+  about: {
+    section: string; kicker: string;
+    p1: React.ReactNode; p2: React.ReactNode; p3: React.ReactNode; quote: string;
+    specTitles: { alias: string; origin: string; genre: string; stack: string; uptime: string; coffee: string; sleep: string; status: string };
+    specValues: { origin: string; genre: string; status: string };
+  };
+  stack: { section: string; kicker: string; intro: React.ReactNode };
+  links: {
+    section: string; kicker: string; soon: string; open: string;
+    subscribeLabel: React.ReactNode; subscribePlaceholder: string;
+    subscribeBtn: string; subscribeDone: string;
+  };
+  footer: { copy: string; impressum: string; datenschutz: string; top: string; built: string; locale: string };
+  modal: { esc: string; close: string };
+  toggle: { de: string; en: string; aria: string };
+};
+
+const STRINGS: Record<Lang, Strings> = {
+  de: {
+    nav: { music: "./musik", about: "./bio", stack: "./stack", links: "./links", live: "● LIVE" },
+    hero: {
+      chipRelease: "ALBUM JETZT VERFÜGBAR",
+      chipVersion: "v1.0.0 — stable",
+      chipLicense: "lizenziert unter GPL (General Panic License)",
+      tagline:
+        "> schmerz kompilieren, 4/4 bei 124 bpm. build passing. sleep failing.",
+      prompt: "jason@lateshift ~ %",
+      cta1: "▶ JETZT HÖREN",
+      cta2: "⌘ TRACKS ANSEHEN",
+      stats: { tracks: "Tracks", runtime: "Laufzeit", release: "Release", bpm: "BPM" },
+    },
+    music: {
+      section: "Neon Stack Overflow",
+      kicker: "album.play()",
+      label: "STREAM / spotify.embed",
+      live: "● LIVE FEED",
+    },
+    about: {
+      section: "Über den Künstler",
+      kicker: "README.md",
+      p1: (
+        <>
+          <span className="drop">B</span>urnout.exe ist das Alias eines Frontend-Entwicklers, der
+          aufgehört hat, Tickets zu schließen, und angefangen hat, Sets zu schließen. Nach sieben
+          Jahren Dashboards, SLAs und Terminal-Dauerlicht ist die IDE irgendwann abgestürzt. Die
+          DAW&nbsp;nicht.
+        </>
+      ),
+      p2: (
+        <>
+          <strong>Neon Stack Overflow</strong> ist, was danach herauskam — ein Album, ausgebleicht
+          vom Monitorlicht, zusammengenäht aus Stand-up-Schuld, Pull Requests um 3 Uhr morgens und
+          dem spezifischen Brummen einer mechanischen Tastatur am Limit. Kein Konzeptalbum, eher
+          ein Crash-Report — in Arpeggios gerendert.
+        </>
+      ),
+      p3: "Zu erwarten: analoge Wärme, digitaler Zweifel, Drum-Machines, die jede Bereitschaftswoche abgespeichert haben, und Synths auf der exakten Frequenz eines Production-Outages. Musik für Leute, die trotzdem weiter shippen.",
+      quote: "Jeder Song ist eine Commit-Message, für die ich zu müde war.",
+      specTitles: {
+        alias: "alias", origin: "herkunft", genre: "genre", stack: "stack",
+        uptime: "uptime", coffee: "kaffee", sleep: "schlaf", status: "status",
+      },
+      specValues: {
+        origin: "hannover / remote",
+        genre: "dark synthwave",
+        status: "● online",
+      },
+    },
+    stack: {
+      section: "Tech Stack",
+      kicker: "require('./tools')",
+      intro: (
+        <>
+          <span className="prompt">$</span> cat package.json · abhängigkeiten aus muscle memory
+          kompiliert. <span className="stack-err">ERR_UNSTABLE_HEAP</span>
+        </>
+      ),
+    },
+    links: {
+      section: "Distribution",
+      kicker: "connect()",
+      soon: "soon",
+      open: "open",
+      subscribeLabel: (
+        <>
+          <span className="prompt">subscribe@burnout ~ %</span> e-mail eintragen für den nächsten drop
+        </>
+      ),
+      subscribePlaceholder: "du@localhost",
+      subscribeBtn: "ABSENDEN ▸",
+      subscribeDone: "✓ IN WARTESCHLANGE",
+    },
+    footer: {
+      copy: "© MMXXVI — alle exceptions unhandled",
+      impressum: "./impressum",
+      datenschutz: "./datenschutz",
+      top: "./top ↑",
+      built: "gebaut um 04:12 mit zwei monitoren und ohne schlaf",
+      locale: "hannover / remote · de",
+    },
+    modal: {
+      esc: "ESC zum schließen · inhalte ohne gewähr",
+      close: "schließen",
+    },
+    toggle: { de: "DE", en: "EN", aria: "Sprache umschalten" },
+  },
+  en: {
+    nav: { music: "./music", about: "./about", stack: "./stack", links: "./links", live: "● LIVE" },
+    hero: {
+      chipRelease: "ALBUM_OUT_NOW",
+      chipVersion: "v1.0.0 — stable",
+      chipLicense: "licensed under GPL (General Panic License)",
+      tagline:
+        "> compiling pain into 4/4 at 124 bpm. build passing. sleep failing.",
+      prompt: "jason@lateshift ~ %",
+      cta1: "▶ LISTEN NOW",
+      cta2: "⌘ VIEW TRACKS",
+      stats: { tracks: "Tracks", runtime: "Runtime", release: "Release", bpm: "BPM" },
+    },
+    music: {
+      section: "Neon Stack Overflow",
+      kicker: "album.play()",
+      label: "STREAM / spotify.embed",
+      live: "● LIVE FEED",
+    },
+    about: {
+      section: "About the artist",
+      kicker: "README.md",
+      p1: (
+        <>
+          <span className="drop">B</span>urnout.exe is the alias of a frontend developer who
+          stopped closing tickets and started closing sets. After seven years shipping dashboards,
+          chasing SLAs, and living inside a terminal, the IDE finally crashed. The
+          DAW&nbsp;didn&rsquo;t.
+        </>
+      ),
+      p2: (
+        <>
+          <strong>Neon Stack Overflow</strong> is what came out of the other side — an album
+          bleached by monitor glow, stitched from stand-up guilt, 3 a.m. pull requests, and the
+          specific hum of a mechanical keyboard at diminishing returns. It is not a concept album
+          so much as a crash report, rendered in arpeggios.
+        </>
+      ),
+      p3: "Expect: analog warmth, digital doubt, drum machines that remember every on-call week, and synths tuned to the exact frequency of a production outage. It is music for people who keep shipping.",
+      quote: "Every song is a commit message I was too tired to write.",
+      specTitles: {
+        alias: "alias", origin: "origin", genre: "genre", stack: "stack",
+        uptime: "uptime", coffee: "coffee", sleep: "sleep", status: "status",
+      },
+      specValues: {
+        origin: "hannover / remote",
+        genre: "dark synthwave",
+        status: "● online",
+      },
+    },
+    stack: {
+      section: "Tech stack",
+      kicker: "require('./tools')",
+      intro: (
+        <>
+          <span className="prompt">$</span> cat package.json · dependencies compiled from
+          muscle memory. <span className="stack-err">ERR_UNSTABLE_HEAP</span>
+        </>
+      ),
+    },
+    links: {
+      section: "Distribution",
+      kicker: "connect()",
+      soon: "soon",
+      open: "open",
+      subscribeLabel: (
+        <>
+          <span className="prompt">subscribe@burnout ~ %</span> drop your email for the next drop
+        </>
+      ),
+      subscribePlaceholder: "you@localhost",
+      subscribeBtn: "TRANSMIT ▸",
+      subscribeDone: "✓ ENQUEUED",
+    },
+    footer: {
+      copy: "© MMXXVI — all exceptions unhandled",
+      impressum: "./imprint",
+      datenschutz: "./privacy",
+      top: "./top ↑",
+      built: "built at 04:12 with two monitors and no sleep",
+      locale: "hannover / remote · de",
+    },
+    modal: {
+      esc: "ESC to close · content provided without warranty",
+      close: "close",
+    },
+    toggle: { de: "DE", en: "EN", aria: "Toggle language" },
+  },
+};
+
+const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: Strings }>(
+  { lang: "en", setLang: () => {}, t: STRINGS.en }
+);
+
+const useLang = () => useContext(LangContext);
 
 const SOCIALS = [
   {
@@ -48,9 +260,35 @@ function useClock() {
   return now;
 }
 
+function LangToggle() {
+  const { lang, setLang, t } = useLang();
+  return (
+    <div className="lang-toggle" role="group" aria-label={t.toggle.aria}>
+      <button
+        type="button"
+        className={lang === "de" ? "lang-on" : ""}
+        onClick={() => setLang("de")}
+        aria-pressed={lang === "de"}
+      >
+        {t.toggle.de}
+      </button>
+      <span aria-hidden>/</span>
+      <button
+        type="button"
+        className={lang === "en" ? "lang-on" : ""}
+        onClick={() => setLang("en")}
+        aria-pressed={lang === "en"}
+      >
+        {t.toggle.en}
+      </button>
+    </div>
+  );
+}
+
 function NavBar() {
   const clock = useClock();
   const stamp = clock.toISOString().replace("T", " ").slice(0, 19);
+  const { t } = useLang();
   return (
     <nav className="nav">
       <div className="nav-brand">
@@ -58,13 +296,14 @@ function NavBar() {
         <span>burnout.exe</span>
       </div>
       <div className="nav-links">
-        <a href="#music">./music</a>
-        <a href="#about">./about</a>
-        <a href="#stack">./stack</a>
-        <a href="#links">./links</a>
+        <a href="#music">{t.nav.music}</a>
+        <a href="#about">{t.nav.about}</a>
+        <a href="#stack">{t.nav.stack}</a>
+        <a href="#links">{t.nav.links}</a>
       </div>
       <div className="nav-status" aria-label="system status">
-        <span className="nav-live">● LIVE</span>
+        <LangToggle />
+        <span className="nav-live">{t.nav.live}</span>
         <span className="nav-time">{stamp} UTC</span>
       </div>
     </nav>
@@ -72,45 +311,44 @@ function NavBar() {
 }
 
 function Hero() {
-  const tagline = useTypewriter(
-    "> compiling pain into 4/4 at 124 bpm. build passing. sleep failing."
-  );
+  const { t } = useLang();
+  const tagline = useTypewriter(t.hero.tagline);
   return (
     <header className="hero" id="top">
       <div className="hero-inner">
         <div className="hero-meta">
-          <span className="chip chip-mag">ALBUM_OUT_NOW</span>
-          <span className="chip">v1.0.0 — stable</span>
-          <span className="chip chip-dim">licensed under GPL (General Panic License)</span>
+          <span className="chip chip-mag">{t.hero.chipRelease}</span>
+          <span className="chip">{t.hero.chipVersion}</span>
+          <span className="chip chip-dim">{t.hero.chipLicense}</span>
         </div>
         <h1 className="glitch" data-text="Burnout.exe">
           Burnout.exe
         </h1>
         <p className="hero-sub">
-          <span className="prompt">jason@lateshift ~ %</span> {tagline}
+          <span className="prompt">{t.hero.prompt}</span> {tagline}
           <span className="caret" aria-hidden>
             _
           </span>
         </p>
         <div className="hero-cta">
           <a className="btn btn-primary" href="#music">
-            ▶ LISTEN NOW
+            {t.hero.cta1}
           </a>
           <a className="btn btn-ghost" href="#music">
-            ⌘ VIEW TRACKS
+            {t.hero.cta2}
           </a>
         </div>
         <dl className="hero-stats">
           <div>
-            <dt>Tracks</dt>
+            <dt>{t.hero.stats.tracks}</dt>
             <dd>08</dd>
           </div>
           <div>
-            <dt>Runtime</dt>
+            <dt>{t.hero.stats.runtime}</dt>
             <dd>36:12</dd>
           </div>
           <div>
-            <dt>Release</dt>
+            <dt>{t.hero.stats.release}</dt>
             <dd>2026.04.19</dd>
           </div>
           <div>
@@ -125,13 +363,14 @@ function Hero() {
 }
 
 function Player() {
+  const { t } = useLang();
   return (
     <section className="music" id="music">
-      <SectionHeading eyebrow="// 01" title="Neon Stack Overflow" kicker="album.play()" />
+      <SectionHeading eyebrow="// 01" title={t.music.section} kicker={t.music.kicker} />
       <div className="spotify">
         <div className="spotify-head">
-          <span className="label">STREAM / spotify.embed</span>
-          <span className="spotify-live">● LIVE FEED</span>
+          <span className="label">{t.music.label}</span>
+          <span className="spotify-live">{t.music.live}</span>
         </div>
         <iframe
           data-testid="embed-iframe"
@@ -171,44 +410,42 @@ function SectionHeading({
 }
 
 function About() {
+  const { t } = useLang();
   return (
     <section className="about" id="about">
-      <SectionHeading eyebrow="// 02" title="About the artist" kicker="README.md" />
+      <SectionHeading eyebrow="// 02" title={t.about.section} kicker={t.about.kicker} />
       <div className="about-grid">
         <article className="about-body">
-          <p>
-            <span className="drop">B</span>urnout.exe is the alias of a frontend developer who
-            stopped closing tickets and started closing sets. After seven years shipping dashboards,
-            chasing SLAs, and living inside a terminal, the IDE finally crashed. The DAW
-            didn&rsquo;t.
-          </p>
-          <p>
-            <strong>Neon Stack Overflow</strong> is what came out of the other side — an album
-            bleached by monitor glow, stitched from stand-up guilt, 3 a.m. pull requests, and the
-            specific hum of a mechanical keyboard at diminishing returns. It is not a concept album
-            so much as a crash report, rendered in arpeggios.
-          </p>
-          <p>
-            Expect: analog warmth, digital doubt, drum machines that remember every on-call week,
-            and synths tuned to the exact frequency of a production outage. It is music for people
-            who keep shipping.
-          </p>
+          <figure className="avatar" aria-label="Burnout.exe — profile image">
+            <div className="avatar-frame">
+              <img src="/jason.png" alt="Burnout.exe" loading="lazy" />
+              <div className="avatar-scan" aria-hidden />
+              <div className="avatar-ring" aria-hidden />
+            </div>
+            <figcaption>
+              <span className="avatar-name">burnout.exe</span>
+              <span className="avatar-sub">./self-portrait.png</span>
+            </figcaption>
+          </figure>
+          <p>{t.about.p1}</p>
+          <p>{t.about.p2}</p>
+          <p>{t.about.p3}</p>
           <div className="about-quote">
             <span className="quote-mark">&quot;</span>
-            Every song is a commit message I was too tired to write.
+            {t.about.quote}
             <span className="quote-mark">&quot;</span>
           </div>
         </article>
         <aside className="about-side" aria-label="system spec">
           <div className="spec">
-            <div className="spec-row"><span>alias</span><span>burnout.exe</span></div>
-            <div className="spec-row"><span>origin</span><span>hamburg / remote</span></div>
-            <div className="spec-row"><span>genre</span><span>dark synthwave</span></div>
-            <div className="spec-row"><span>stack</span><span>OB-6 · TR-8s · TypeScript</span></div>
-            <div className="spec-row"><span>uptime</span><span>97.3%</span></div>
-            <div className="spec-row"><span>coffee</span><span>∞</span></div>
-            <div className="spec-row"><span>sleep</span><span>null</span></div>
-            <div className="spec-row"><span>status</span><span className="pulse">● online</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.alias}</span><span>burnout.exe</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.origin}</span><span>{t.about.specValues.origin}</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.genre}</span><span>{t.about.specValues.genre}</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.stack}</span><span>OB-6 · TR-8s · TypeScript</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.uptime}</span><span>97.3%</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.coffee}</span><span>∞</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.sleep}</span><span>null</span></div>
+            <div className="spec-row"><span>{t.about.specTitles.status}</span><span className="pulse">{t.about.specValues.status}</span></div>
           </div>
           <pre className="log" aria-hidden>
 {`$ tail -f ~/artist.log
@@ -405,31 +642,29 @@ const TECH: Tech[] = [
 ];
 
 function TechStack() {
+  const { t } = useLang();
   return (
     <section className="stack" id="stack">
-      <SectionHeading eyebrow="// 03" title="Tech stack" kicker="require('./tools')" />
-      <p className="stack-intro">
-        <span className="prompt">$</span> cat package.json · dependencies compiled from
-        muscle memory. <span className="stack-err">ERR_UNSTABLE_HEAP</span>
-      </p>
+      <SectionHeading eyebrow="// 03" title={t.stack.section} kicker={t.stack.kicker} />
+      <p className="stack-intro">{t.stack.intro}</p>
       <div className="stack-grid">
-        {TECH.map((t, i) => (
+        {TECH.map((item, i) => (
           <figure
-            key={t.name}
-            className={`logo logo-${t.hue}`}
+            key={item.name}
+            className={`logo logo-${item.hue}`}
             style={{ ["--i" as string]: String(i) } as React.CSSProperties}
           >
             <div className="logo-frame" aria-hidden>
-              <div className="logo-svg logo-base">{t.svg}</div>
-              <div className="logo-svg logo-gh logo-gh-1">{t.svg}</div>
-              <div className="logo-svg logo-gh logo-gh-2">{t.svg}</div>
+              <div className="logo-svg logo-base">{item.svg}</div>
+              <div className="logo-svg logo-gh logo-gh-1">{item.svg}</div>
+              <div className="logo-svg logo-gh logo-gh-2">{item.svg}</div>
               <div className="logo-scan" />
             </div>
             <figcaption>
-              <span className="logo-name glitch-sm" data-text={t.name}>
-                {t.name}
+              <span className="logo-name glitch-sm" data-text={item.name}>
+                {item.name}
               </span>
-              <span className="logo-tag">./{t.tag}</span>
+              <span className="logo-tag">./{item.tag}</span>
             </figcaption>
           </figure>
         ))}
@@ -439,9 +674,10 @@ function TechStack() {
 }
 
 function Links() {
+  const { t } = useLang();
   return (
     <section className="links" id="links">
-      <SectionHeading eyebrow="// 04" title="Distribution" kicker="connect()" />
+      <SectionHeading eyebrow="// 04" title={t.links.section} kicker={t.links.kicker} />
       <div className="links-grid">
         {SOCIALS.map((s) => {
           const external = s.href.startsWith("http");
@@ -457,7 +693,7 @@ function Links() {
               <span className="link-name">{s.name}</span>
               <span className="link-handle">{s.handle}</span>
               <span className="link-cta">
-                <span>{external ? "open" : "soon"}</span>
+                <span>{external ? t.links.open : t.links.soon}</span>
                 <span aria-hidden>↗</span>
               </span>
               <span className="link-glow" aria-hidden />
@@ -471,23 +707,21 @@ function Links() {
           e.preventDefault();
           const btn = (e.currentTarget.querySelector("button") as HTMLButtonElement) || null;
           if (btn) {
-            btn.textContent = "✓ ENQUEUED";
+            btn.textContent = t.links.subscribeDone;
             btn.disabled = true;
           }
         }}
       >
-        <label htmlFor="email">
-          <span className="prompt">subscribe@burnout ~ %</span> drop your email for the next drop
-        </label>
+        <label htmlFor="email">{t.links.subscribeLabel}</label>
         <div className="subscribe-row">
           <input
             id="email"
             type="email"
             required
-            placeholder="you@localhost"
+            placeholder={t.links.subscribePlaceholder}
             autoComplete="email"
           />
-          <button type="submit">TRANSMIT ▸</button>
+          <button type="submit">{t.links.subscribeBtn}</button>
         </div>
       </form>
     </section>
@@ -495,32 +729,34 @@ function Links() {
 }
 
 function Footer({ onOpen }: { onOpen: (k: LegalKind) => void }) {
+  const { t } = useLang();
   return (
     <footer className="footer">
       <div className="footer-row">
         <span className="footer-brand">burnout.exe</span>
-        <span className="footer-dim">© MMXXVI — all exceptions unhandled</span>
+        <span className="footer-dim">{t.footer.copy}</span>
       </div>
       <div className="footer-row footer-legal">
         <button type="button" className="footer-link" onClick={() => onOpen("impressum")}>
-          ./impressum
+          {t.footer.impressum}
         </button>
         <button type="button" className="footer-link" onClick={() => onOpen("datenschutz")}>
-          ./datenschutz
+          {t.footer.datenschutz}
         </button>
         <a className="footer-link" href="#top">
-          ./top ↑
+          {t.footer.top}
         </a>
       </div>
       <div className="footer-row footer-sub">
-        <span>built at 04:12 with two monitors and no sleep</span>
-        <span>hamburg / remote · de</span>
+        <span>{t.footer.built}</span>
+        <span>{t.footer.locale}</span>
       </div>
     </footer>
   );
 }
 
 function LegalModal({ kind, onClose }: { kind: LegalKind; onClose: () => void }) {
+  const { t } = useLang();
   const isImp = kind === "impressum";
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label={kind}>
@@ -530,7 +766,7 @@ function LegalModal({ kind, onClose }: { kind: LegalKind; onClose: () => void })
           <span className="modal-path">
             ~/legal/<span className="modal-kind">{kind}.md</span>
           </span>
-          <button type="button" className="modal-close" aria-label="close" onClick={onClose}>
+          <button type="button" className="modal-close" aria-label={t.modal.close} onClick={onClose}>
             ✕
           </button>
         </header>
@@ -538,8 +774,8 @@ function LegalModal({ kind, onClose }: { kind: LegalKind; onClose: () => void })
           {isImp ? <Impressum /> : <Datenschutz />}
         </div>
         <footer className="modal-foot">
-          <span>ESC to close · content provided without warranty</span>
-          <span className="modal-dim">burnout.exe · hamburg</span>
+          <span>{t.modal.esc}</span>
+          <span className="modal-dim">burnout.exe · hannover</span>
         </footer>
       </div>
     </div>
@@ -747,6 +983,25 @@ type LegalKind = "impressum" | "datenschutz";
 
 export default function App() {
   const [legal, setLegal] = useState<LegalKind | null>(null);
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "en";
+    const saved = window.localStorage.getItem("burnout.lang");
+    if (saved === "de" || saved === "en") return saved;
+    return navigator.language.toLowerCase().startsWith("de") ? "de" : "en";
+  });
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    try {
+      window.localStorage.setItem("burnout.lang", l);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     if (!legal) return;
@@ -762,6 +1017,7 @@ export default function App() {
   }, [legal]);
 
   return (
+    <LangContext.Provider value={{ lang, setLang, t: STRINGS[lang] }}>
     <div className="app">
       <div className="bg" aria-hidden>
         <div className="bg-grid" />
@@ -781,5 +1037,6 @@ export default function App() {
       <Footer onOpen={setLegal} />
       {legal && <LegalModal kind={legal} onClose={() => setLegal(null)} />}
     </div>
+    </LangContext.Provider>
   );
 }
