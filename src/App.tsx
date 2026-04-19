@@ -546,8 +546,21 @@ const TECH: Tech[] = [
     hue: "violet",
     svg: (
       <svg viewBox="0 0 64 64" aria-hidden>
-        <path d="M32 4 L56 18 V46 L32 60 L8 46 V18 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="miter" />
-        <path d="M24 26 V42 C24 46 28 46 30 44 M38 26 H46 M38 26 V34 H46 V42" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="square" />
+        <path
+          d="M32 4 L56 18 V46 L32 60 L8 46 V18 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="miter"
+        />
+        <path
+          d="M22 44 V20 L42 44 V20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+        />
       </svg>
     ),
   },
@@ -568,10 +581,42 @@ const TECH: Tech[] = [
     hue: "mag",
     svg: (
       <svg viewBox="0 0 64 64" aria-hidden>
-        <rect x="4" y="18" width="56" height="28" fill="none" stroke="currentColor" strokeWidth="2" />
-        <path d="M10 40 V24 H18 V40 M14 24 V40" fill="none" stroke="currentColor" strokeWidth="2.2" />
-        <path d="M24 40 V24 H36 V40 M30 24 V34" fill="none" stroke="currentColor" strokeWidth="2.2" />
-        <path d="M42 40 V24 H54 V34 H48" fill="none" stroke="currentColor" strokeWidth="2.2" />
+        <rect
+          x="4"
+          y="16"
+          width="56"
+          height="32"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        />
+        {/* n */}
+        <path
+          d="M8 44 V20 H20 V44"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+        />
+        {/* p */}
+        <path
+          d="M24 48 V20 H36 V32 H24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+        />
+        {/* m */}
+        <path
+          d="M40 44 V20 H48 V32 M48 20 H56 V44"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+        />
       </svg>
     ),
   },
@@ -598,8 +643,33 @@ const TECH: Tech[] = [
     hue: "mag",
     svg: (
       <svg viewBox="0 0 64 64" aria-hidden>
-        <path d="M10 4 L14 54 L32 60 L50 54 L54 4 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="miter" />
-        <path d="M18 14 H46 L44 22 H22 L23 30 H43 L41 44 L32 48 L23 44 L22 38" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="miter" />
+        <path
+          d="M10 4 L14 54 L32 60 L50 54 L54 4 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="miter"
+        />
+        <text
+          x="32"
+          y="44"
+          textAnchor="middle"
+          fontFamily="Orbitron, monospace"
+          fontWeight={900}
+          fontSize={26}
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="0.5"
+        >
+          5
+        </text>
+        <path
+          d="M22 18 H42"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          opacity="0.55"
+        />
       </svg>
     ),
   },
@@ -609,8 +679,33 @@ const TECH: Tech[] = [
     hue: "blue",
     svg: (
       <svg viewBox="0 0 64 64" aria-hidden>
-        <path d="M10 4 L14 54 L32 60 L50 54 L54 4 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="miter" />
-        <path d="M18 14 H46 L44 22 H22 L23 30 H43 L41 44 L32 48 L23 44 L22 38" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="miter" />
+        <path
+          d="M10 4 L14 54 L32 60 L50 54 L54 4 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="miter"
+        />
+        <text
+          x="32"
+          y="44"
+          textAnchor="middle"
+          fontFamily="Orbitron, monospace"
+          fontWeight={900}
+          fontSize={26}
+          fill="currentColor"
+          stroke="currentColor"
+          strokeWidth="0.5"
+        >
+          3
+        </text>
+        <path
+          d="M22 18 H42"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          opacity="0.55"
+        />
       </svg>
     ),
   },
